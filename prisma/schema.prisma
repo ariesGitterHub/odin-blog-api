@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+  // output = "..app/generated/client" // Most teams do not commit generated Prisma clients, and use .gitignore to add "generated/prisma", NOTE - the traditional setup doesn't even use output
+}
+
+datasource db {
+  provider = "postgresql"
+  // NOTE - below, VS Code message: Your Prisma schema file is missing the datasource URL and the current workspace is pinned to Prisma 6. The datasource URL is required in Prisma 6, but no longer expected in Prisma 7. If you intend to use Prisma 7, press the button below to unpin the current workspace from Prisma 6. If you want to continue using Prisma 6, you can ignore this message.
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER // Blog reader/commenter
+  ADMIN // Blog writer
+}
+
+// This will be for the blog writer (admin) and the blog reader/commenter (user)
+model User {
+  id String @id @default(uuid())
+
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+
+  email        String @unique
+  passwordHash String @map("password_hash")
+
+  role UserRole @default(USER)
+
+  emailVerified Boolean @default(false) @map("email_verified")
+
+  lastLoginAt DateTime? @map("last_login_at") // NOTE: ? means nullable fields
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  // User foreign keys are used in these tables as Relations
+  posts    Post[]
+  comments Comment[]
+
+  @@map("users") // NOTE: this lets me use singular Prisma model names AND use plural SQL table names; it is a common practice
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // User this post belongs to
+
+  postMessage String @map("post_message") @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  // Comment foreign keys are used in these tables as Relations
+  comments Comment[]
+
+  @@index([userId])
+  @@map("posts")
+}
+
+model Comment {
+  id String @id @default(uuid())
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // User this comment belongs to
+
+  postId String @map("post_id") // NOTE - requires every comment to belong to a post
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade) // Post this comment is attached to
+
+  commentMessage String @map("comment_message") @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([postId])
+  @@map("comments")
+}
