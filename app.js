@@ -8,8 +8,6 @@ const requiredEnvVars = [
   "DATABASE_URL",
   // "SESSION_SECRET", // using JWT not server-side sessions
   "JWT_SECRET",
-  "MMM_EMAIL",
-  "MMM_PASSWORD",
   // "INVITE_CODE",
   // "STORAGE_PROVIDER",
   // "MAX_FILE_DOWNLOAD_KB",
@@ -35,6 +33,9 @@ const helmet = require("helmet");
 
 const app = express();
 
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
 // *** Proxy configuration
 
 // Required when deployed behind Render's proxy.
@@ -49,7 +50,20 @@ app.set("trust proxy", 1);
 //   "title": "My Blog Post",
 //   "content": "Hello world"
 // }
+
+// app.use(express.json());
+// Enable parsing cookies and JSON body
+app.use(cookieParser());
 app.use(express.json());
+
+// Configure CORS to allow credentials
+app.use(cors({
+  origin: [// TODO - change later
+  "https://blog-reader.example.com",
+  "https://blog-writer.example.com",
+  ],
+  credentials: true
+}));
 
 // *** Security headers
 

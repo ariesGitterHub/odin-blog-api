@@ -8,16 +8,16 @@ const bcrypt = require("bcryptjs");
 
 // Ensures email uniqueness at sign-up for writing posts (if additional writers making posts are added later) and for those signing up to comment on posts
 // Comment out until needed...
-// async function checkIfEmailExistsForSignUp(email) {
-//   return prisma.user.findUnique({
-//     where: {
-//       email,
-//     },
-//     select: {
-//       id: true,
-//     },
-//   });
-// }
+async function checkIfEmailExistsForSignUp(email) {
+  return prisma.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+}
 
 // Ensures email uniqueness when any user choses to update their profile (poster or commenter)
 // Comment out until needed...
@@ -60,7 +60,7 @@ async function createUser({
 }
 
 module.exports = {
-  // checkIfEmailExistsForSignUp,
+  checkIfEmailExistsForSignUp,
   // checkIfEmailAlreadyExists,
   createUser,
 };
