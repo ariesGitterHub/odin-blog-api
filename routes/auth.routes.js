@@ -14,6 +14,7 @@ router.get("/password-rules", (req, res) => {
 // Auth Routes
 router.post("/signup", validateSignUp, signUp);
 router.post("/login", logIn);
+router.post("/logout", logOut);
 
 // Posts Routes
 // router.post("/posts", verifyUser, createPost);
