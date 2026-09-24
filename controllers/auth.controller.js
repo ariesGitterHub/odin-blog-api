@@ -1,7 +1,7 @@
 // const bcrypt = require("bcryptjs");
 require("dotenv/config");
 const { validationResult } = require("express-validator");
-const { formatValidationErrors } = require("../utils/formatValidationErrors");
+const { formatValidationErrors } = require("../utils/format-validation-errors.utils.js");
 const { verifyLogin } = require("../services/auth.service.js");
 const {
   createUser,
@@ -103,10 +103,18 @@ async function logIn(req, res, next) {
   }
 }
 
-// Work on logIn next
 async function logOut(req, res, next) {
   try {
-    console.log();
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out.",
+    });
   } catch (err) {
     next(err);
   }
