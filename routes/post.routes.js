@@ -1,5 +1,12 @@
 const express = require("express");
 
+const {
+  getBlogPosts,
+  createNewBlogPost,
+  editBlogPost,
+  deleteBlogPost,
+} = require("../controllers/post.controller")
+
 const { verifyUser } = require("../middleware/verify-user.middleware");
 const { requireAdmin } = require("../middleware/require-admin.middleware");
 
@@ -9,10 +16,12 @@ const router = express.Router();
 
 // Posts Routes
 
-// router.post("/", verifyUser, requireAdmin, createNewBlogPost);
+router.get("/", verifyUser, getBlogPosts);
 
-// router.put("/:postId", verifyUser, requireAdmin, updatePost);
+router.post("/", verifyUser, requireAdmin, createNewBlogPost);
 
-// router.delete("/:postId", verifyUser, requireAdmin, deleteBlogPost);
+router.put("/:postId", verifyUser, requireAdmin, editBlogPost);
+
+router.delete("/:postId", verifyUser, requireAdmin, deleteBlogPost);
 
 module.exports = router;
