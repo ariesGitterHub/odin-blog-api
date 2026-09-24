@@ -15,7 +15,7 @@ async function createPost({ userId, postMessage }) {
   });
 }
 
-async function getAllPosts() {
+async function getAllPostsAndComments() {
   return prisma.post.findMany({
     select: {
       id: true,
@@ -65,7 +65,7 @@ async function deletePost(postId) {
 
 module.exports = {
   createPost,
-  getAllPosts,
+  getAllPostsAndComments,
   updatePost,
   deletePost,
 };
