@@ -41,10 +41,10 @@ async function editBlogPost(req, res, next) {
 
     const { postMessage } = req.body;
 
-    const post = await updatePost({
+    const post = await updatePost(
       postId,
       postMessage,
-    });
+    );
 
     return res.status(200).json({
       post,
@@ -57,9 +57,9 @@ async function deleteBlogPost(req, res, next) {
   try {
     const postId = req.params.postId;
 
-    const post = await deletePost({
+    const post = await deletePost(
       postId,
-    });
+    );
 
     return res.status(200).json({
       post,
