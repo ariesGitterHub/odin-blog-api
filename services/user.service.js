@@ -6,7 +6,7 @@
 const prisma = require("../lib/prisma");
 const bcrypt = require("bcryptjs");
 
-// Ensures email uniqueness at sign-up for writing posts (if additional writers making posts are added later) and for those signing up to comment on posts
+// Checks if the email already exists at sign-up for writing posts (if additional writers making posts are added later) and for those signing up to comment on posts
 // Comment out until needed...
 async function checkIfEmailExistsForSignUp(email) {
   return prisma.user.findUnique({
@@ -19,7 +19,7 @@ async function checkIfEmailExistsForSignUp(email) {
   });
 }
 
-// Ensures email uniqueness when any user choses to update their profile (poster or commenter)
+// Checks if the email already exists when any user chooses to update their profile (poster or commenter)
 // Comment out until needed...
 // async function checkIfEmailAlreadyExists(email, targetId) {
 //   return prisma.user.findFirst({
@@ -59,8 +59,59 @@ async function createUser({
   });
 }
 
+async function getUser(userId) {
+  return prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      emailVerified: true,
+    },
+  });
+}
+
+async function getUsers() {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      emailVerified: true,
+      // TODO - add more details from schema
+    },
+  });
+}
+
+async function updateUser(userId, userData) {
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: userData,
+  });
+}
+
+async function deleteUser(userId) {
+  return prisma.user.delete({
+    where: {
+      id: userId,
+    }
+  })
+}
+
 module.exports = {
   checkIfEmailExistsForSignUp,
   // checkIfEmailAlreadyExists,
   createUser,
+  getUser,
+  getUsers,
+  updateUser,
+  deleteUser,
 };
