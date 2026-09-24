@@ -82,7 +82,7 @@ const commentRoutes = require("./routes/comment.routes.js");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/post/comment", commentRoutes);
+app.use("/api/post", commentRoutes);
 
 // *** API root / health check (API root endpoint)
 

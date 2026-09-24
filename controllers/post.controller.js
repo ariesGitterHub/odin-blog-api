@@ -55,7 +55,7 @@ async function editBlogPost(req, res, next) {
 }
 async function deleteBlogPost(req, res, next) {
   try {
-    const postId = req.params.id;
+    const postId = req.params.postId;
 
     const post = await deletePost({
       postId,

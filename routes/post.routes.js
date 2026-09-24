@@ -12,10 +12,6 @@ const { requireAdmin } = require("../middleware/require-admin.middleware");
 
 const router = express.Router();
 
-// TODO - add verifyUser to all protected routes
-
-// Posts Routes
-
 router.get("/", verifyUser, getBlogPosts);
 
 router.post("/", verifyUser, requireAdmin, createNewBlogPost);
