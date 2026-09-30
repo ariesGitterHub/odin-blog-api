@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon bootstrap.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx prisma migrate deploy && node bootstrap.js"
+    "start": "npx prisma migrate deploy && node bootstrap.js",
+    "schema-refresh": "npx prisma migrate dev --name init"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

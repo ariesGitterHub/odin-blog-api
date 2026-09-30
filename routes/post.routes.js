@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
   getBlogPosts,
+  getPublishedBlogPosts,
   createNewBlogPost,
   editBlogPost,
   deleteBlogPost,
@@ -12,7 +13,11 @@ const { requireAdmin } = require("../middleware/require-admin.middleware");
 
 const router = express.Router();
 
-router.get("/", verifyUser, getBlogPosts);
+// Get all published blog posts - anyone can read these, they are public
+router.get("/public", getPublishedBlogPosts);
+
+// Get all blog posts, published or unpublished
+router.get("/", verifyUser, requireAdmin, getBlogPosts);
 
 router.post("/", verifyUser, requireAdmin, createNewBlogPost);
 

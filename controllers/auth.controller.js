@@ -2,7 +2,7 @@
 require("dotenv/config");
 const { validationResult } = require("express-validator");
 const { formatValidationErrors } = require("../utils/format-validation-errors.utils.js");
-const { verifyLogin } = require("../services/auth.service.js");
+const { verifyLogin, getUserById } = require("../services/auth.service.js");
 const {
   createUser,
   checkIfEmailExistsForSignUp,
@@ -120,8 +120,25 @@ async function logOut(req, res, next) {
   }
 }
 
+async function getCurrentUser(req, res,next) {
+  try {
+    const user = await getUserById(req.user.userId);
+
+    if(!user) {
+      return res.sendStatus(401);
+    }
+
+    return res.status(200).json({
+      user
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
   signUp,
   logIn,
   logOut,
+  getCurrentUser,
 };

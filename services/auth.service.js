@@ -31,6 +31,22 @@ async function verifyLogin(email, password) {
   };
 }
 
+async function getCurrentUser(userId) {
+  return prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+    },
+  });
+}
+
 module.exports = {
   verifyLogin,
+  getCurrentUser,
 };

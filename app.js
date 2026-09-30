@@ -1,5 +1,3 @@
-// TODO - CORS omitted for now, will be needed
-
 // *** Environment variable safety checks
 
 // dotenv is loaded in bootstrap.js before app.js is required.
@@ -59,8 +57,9 @@ app.use(express.json());
 // Configure CORS to allow credentials
 app.use(cors({
   origin: [// TODO - change later
-  "https://blog-reader.example.com",
-  "https://blog-writer.example.com",
+  // "https://odin-blog-reader.example.com",
+  "http://localhost:5173",
+  // "https://odin-blog-writer.example.com",
   ],
   credentials: true
 }));
