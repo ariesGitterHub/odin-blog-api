@@ -8,8 +8,10 @@ async function verifyLogin(email, password) {
     },
     select: {
       id: true,
+      firstName: true, // New
+      lastName: true, // New
       email: true,
-      passwordHash: true,
+      passwordHash: true, // I need passwordHash temporarily because bcrypt.compare() needs it
       role: true,
     },
   });
@@ -25,7 +27,10 @@ async function verifyLogin(email, password) {
   }
 
   return {
+    // REMINDER - that passwordHash is NOT returned on purpose!!!
     id: user.id,
+    firstName: user.firstName, // Newly added for frontend
+    lastName: user.lastName, // New added for frontend
     email: user.email,
     role: user.role,
   };

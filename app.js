@@ -56,10 +56,8 @@ app.use(express.json());
 
 // Configure CORS to allow credentials
 app.use(cors({
-  origin: [// TODO - change later
-  // "https://odin-blog-reader.example.com",
+  origin: [
   "http://localhost:5173",
-  // "https://odin-blog-writer.example.com",
   ],
   credentials: true
 }));
@@ -79,9 +77,13 @@ const postRoutes = require("./routes/post.routes.js");
 // Comment routes
 const commentRoutes = require("./routes/comment.routes.js");
 
+// User routes
+const userRoutes = require("./routes/user.routes.js");
+
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/post", commentRoutes);
+app.use("/api/user", userRoutes);
 
 // *** API root / health check (API root endpoint)
 

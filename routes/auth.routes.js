@@ -1,4 +1,4 @@
-require("dotenv/config");
+// require("dotenv/config");
 const express = require("express");
 const {
   signUp,
@@ -9,7 +9,7 @@ const {
 // const { verifyUser } = require("../middleware/verify-user.middleware");
 const passwordRules = require("../config/password-rules.config");
 const { validateSignUp } = require("../middleware/validate-signup.middleware.js");
-const { verifyUser } = require("../middleware/verify-user.middleware.js");
+// const { verifyUser } = require("../middleware/verify-user.middleware.js");
 const router = express.Router();
 
 // NOTE - I didn't need to go from "route ➡ controller ➡ service ➡ database" here, rather just "route ➡ config ➡ json", it's just a tiny static configuration endpoint...
@@ -21,6 +21,7 @@ router.get("/password-rules", (req, res) => {
 router.post("/signup", validateSignUp, signUp);
 router.post("/login", logIn);
 router.post("/logout", logOut);
-router.get("/me", verifyUser, getCurrentUser)
+// router.get("/me", verifyUser, getCurrentUser); // NOTE - verifyUser was causing 401 and stopping flow
+router.get("/me", getCurrentUser);
 
 module.exports = router;

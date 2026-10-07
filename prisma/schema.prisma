@@ -14,7 +14,7 @@ model User {
   email         String    @unique
   passwordHash  String    @map("password_hash")
   role          UserRole  @default(USER)
-  emailVerified Boolean   @default(false) @map("email_verified")
+  // emailVerified Boolean   @default(false) @map("email_verified") // Not needed for this project, but keep as ref for next project
   lastLoginAt   DateTime? @map("last_login_at")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")

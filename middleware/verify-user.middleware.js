@@ -1,3 +1,7 @@
+//  Reminder - any controller that needs it already has the authenticated user's JWT payload available as req.user!!! And req.user.userId, is that is used...
+
+// This middleware helps out everywhere else so that nothing else needs to know anything about cookies, JWT verification, or JWT_SECRET.
+
 const jwt = require("jsonwebtoken");
 
 function verifyUser(req, res, next) {

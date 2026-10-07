@@ -13,6 +13,10 @@ const jwt = require("jsonwebtoken");
 
 async function signUp(req, res, next) {
   try {
+
+    // TODO - where is this going? Where is it connecting to a route via middleware?
+
+    //TODO - REMINDER , I need error pages to for this app.
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {
@@ -44,6 +48,8 @@ async function signUp(req, res, next) {
       password,
     });
 
+
+    // TODO - possible security issue. Is the passwordHash returned in this object?
     return res.status(201).json({
       user,
     });
@@ -92,6 +98,8 @@ async function logIn(req, res, next) {
       maxAge: 3600000,
     });
 
+
+// TODO - is this return password hash too like createUser?
     return res.status(200).json({
       success: true,
       user: user,
@@ -119,20 +127,62 @@ async function logOut(req, res, next) {
     next(err);
   }
 }
+// Note this code below was not returning null for non-auth users. It needs to though or this controller that is meant to check if a current user is authenticated via /api/auth/me will crash the app. Null is a needed response.
 
-async function getCurrentUser(req, res,next) {
+// async function getCurrentUser(req, res,next) {
+//   try {
+//     const user = await getUserById(req.user.userId);
+
+//     if(!user) {
+//       return res.sendStatus(401);
+//     }
+
+//     return res.status(200).json({
+//       user
+//     })
+//   } catch (err) {
+//     next(err)
+//   }
+// }
+
+
+// This tells me whether a user is currently logged in... so user...or null...
+
+// TODO - note duplicated jwt code...fix
+async function getCurrentUser(req, res, next) {
   try {
-    const user = await getUserById(req.user.userId);
+    const token = req.cookies.accessToken;
 
-    if(!user) {
-      return res.sendStatus(401);
+    if (!token) {
+      return res.status(200).json({ user: null });
     }
 
-    return res.status(200).json({
-      user
-    })
+    let authData;
+
+    try {
+      authData = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      if (
+        err.name === "TokenExpiredError" ||
+        err.name === "JsonWebTokenError"
+      ) {
+        return res.status(200).json({ user: null });
+      }
+
+      throw err;
+    }
+
+    const user = await getUserById(authData.userId);
+    console.log(user);
+    
+
+    if (!user) {
+      return res.status(200).json({ user: null });
+    }
+
+    return res.status(200).json({ user });
   } catch (err) {
-    next(err)
+    next(err);
   }
 }
 

@@ -19,7 +19,7 @@ const passwordValidator = check("password").custom((value) => {
   );
 
   if (!(hasMinLength && hasLower && hasUpper && hasNumber && hasSpecial)) {
-    throw new Error("Weak password, see password requirements.");
+    throw new Error("Weak password, see requirements.");
   }
 
   return true;

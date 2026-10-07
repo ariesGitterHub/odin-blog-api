@@ -22,7 +22,7 @@ async function seed() {
       email: process.env.MMM_EMAIL,
       passwordHash: hash,
       role: "ADMIN",
-      emailVerified: true,
+      // emailVerified: true,
     },
   });
 
@@ -33,7 +33,7 @@ async function seed() {
       email: "joe@user.com",
       passwordHash: hash,
       role: "USER",
-      emailVerified: true,
+      // emailVerified: true,
     },
   });
 }
