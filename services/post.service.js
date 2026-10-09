@@ -34,7 +34,10 @@ async function getAllPostsAndComments() {
           updatedAt: true,
           user: {
             select: {
+              id: true, //New
               email: true,
+              firstName: true,
+              lastName: true,
             },
           },
         },
@@ -66,7 +69,8 @@ async function getPublishedPostsAndComments() {
           updatedAt: true,
           user: {
             select: {
-              // email: true,
+              id: true, // New, need for edit button
+              email: true, // TODO - Use this?? Likely not
               firstName: true,
               lastName: true,
             },
