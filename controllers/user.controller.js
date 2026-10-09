@@ -1,6 +1,5 @@
 // const bcrypt = require("bcryptjs"); // TODO - should this be handled in the service? Answer is NO!
 require("dotenv/config");
-require;
 const { validationResult } = require("express-validator");
 const {
   formatValidationErrors,
@@ -67,7 +66,6 @@ async function updateProfile(req, res, next) {
       }
 
       updateData.email = email.trim().toLowerCase();
-      
     }
 
     if (password) {
@@ -88,6 +86,17 @@ async function updateProfile(req, res, next) {
 async function deleteProfile(req, res, next) {
   try {
     const userId = req.user.userId;
+    const userRole = req.user.role;
+
+    if (userRole === "ADMIN") {
+      return res.status(403).json({
+        error: {
+          message: "Administrators cannot delete their own account.",
+        },
+      });
+    }
+    console.log("userId = ", userId);
+    
     await deleteUser(userId);
 
     return res.sendStatus(204);

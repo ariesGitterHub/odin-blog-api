@@ -1,13 +1,7 @@
-// Create a new user
-// Find a user by ID
-// Find a user by email
-// Potentially update user information later
-
 const prisma = require("../lib/prisma");
 const bcrypt = require("bcryptjs");
 
 // Checks if the email already exists at sign-up for writing posts (if additional writers making posts are added later) and for those signing up to comment on posts
-// Comment out until needed...
 async function checkIfEmailExistsForSignUp(email) {
   return prisma.user.findUnique({
     where: {
@@ -20,7 +14,6 @@ async function checkIfEmailExistsForSignUp(email) {
 }
 
 // Checks if the email already exists when any user chooses to update their profile (poster or commenter)
-// Comment out until needed...
 async function checkIfEmailAlreadyExists(email, userId) {
   return prisma.user.findFirst({
     where: {
@@ -42,8 +35,8 @@ async function createUser({
   lastName,
   email,
   password,
-  // role, // defaults to USER
-  // emailVerified, // defaults to false
+  // role, // defaults to USER for blog commenters, on blog writer is admin
+  // emailVerified, // defaults to false // TODO - keep? Reset schema and db if not keeping
 }) {
   const passwordHash = await bcrypt.hash(password, 12);
 
@@ -53,14 +46,14 @@ async function createUser({
       lastName,
       email,
       passwordHash,
-      // role, // defaults to USER
-      // emailVerified, // defaults to false
+      // role, // defaults to USER // defaults to USER for blog commenters, on blog writer is admin
+      // emailVerified, // defaults to false // TODO - keep? Reset schema and db if not keeping
     },
   });
 }
 
-
 // Not needed now, maybe if I make an admin page...
+
 // async function getUser(userId) {
 //   return prisma.user.findUnique({
 //     where: {
