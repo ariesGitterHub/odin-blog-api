@@ -52,7 +52,7 @@ async function createUser({
   });
 }
 
-// Not needed now, maybe if I make an admin page...
+// NOTE - getUser and getUsers - not needed now, maybe if I make an admin page...
 
 // async function getUser(userId) {
 //   return prisma.user.findUnique({
