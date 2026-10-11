@@ -15,7 +15,7 @@ async function createNewBlogComment(req, res, next) {
     const comment = await createComment({
       userId,
       postId,
-      commentMessage: comment_message,
+      commentMessage: comment_message.trim(),
     })
 
     return res.status(201).json({
