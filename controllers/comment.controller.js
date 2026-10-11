@@ -7,14 +7,15 @@ const {
 
 async function createNewBlogComment(req, res, next) {
   try {
+    const userId = req.user.userId;
     const postId = req.params.postId;
 
-    const { commentMessage } = req.body;
+    const { comment_message } = req.body;
 
     const comment = await createComment({
-      userId: req.user.userId,
+      userId,
       postId,
-      commentMessage,
+      commentMessage: comment_message,
     })
 
     return res.status(201).json({
