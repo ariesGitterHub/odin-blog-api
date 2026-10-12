@@ -16,11 +16,11 @@ async function createComment({ userId, postId, commentMessage }) {
   });
 }
 
-async function updateComment(commentId, userId, commentMessage) {
+async function updateComment({userId, commentId, commentMessage}) {
   return prisma.comment.update({
     where: {
+      userId,      
       id: commentId,
-      userId,
     },
     data: {
       commentMessage,
@@ -28,11 +28,11 @@ async function updateComment(commentId, userId, commentMessage) {
   });
 }
 
-async function deleteComment(commentId, userId) {
+async function deleteComment(userId, commentId) {
   return prisma.comment.delete({
     where: {
+      userId,      
       id: commentId,
-      userId,
     },
   });
 }

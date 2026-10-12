@@ -7,7 +7,11 @@ const { verifyUser } = require("../middleware/verify-user.middleware");
 const router = express.Router();
 
 router.post("/:postId", verifyUser, createNewBlogComment);
-router.put("/:postId/:commentId", verifyUser, editBlogComment);
-router.delete("/:postId/:commentId", verifyUser, deleteBlogComment);
+
+// router.put("/:postId/:commentId", verifyUser, editBlogComment);
+router.put("/:commentId", verifyUser, editBlogComment);
+
+// router.delete("/:postId/:commentId", verifyUser, deleteBlogComment);
+router.delete("/:commentId", verifyUser, deleteBlogComment);
 
 module.exports = router;

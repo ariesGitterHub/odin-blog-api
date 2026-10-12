@@ -29,8 +29,8 @@ async function createNewBlogComment(req, res, next) {
 
 async function editBlogComment(req, res, next) {
   try {
+    const userId = req.user.userId;    
     const commentId = req.params.commentId;
-    const userId = req.user.userId;
 
     const commentUserId = await getCommentUserId(commentId);
 
@@ -42,13 +42,14 @@ async function editBlogComment(req, res, next) {
       return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
     }
 
-    const { commentMessage }  = req.body;
+    // const { commentMessage }  = req.body;
+    const { comment_message } = req.body;
 
-    const comment = await updateComment(
-      commentId,
+    const comment = await updateComment({
       userId, // NOTE - this is an authenticated user ID checked by verifyUser
-      commentMessage,
-    );
+      commentId,
+      commentMessage: comment_message.trim(),
+  });
 
     return res.status(200).json({
       comment,
@@ -61,8 +62,8 @@ async function editBlogComment(req, res, next) {
 
 async function deleteBlogComment(req, res, next) {
   try {
+    const userId = req.user.userId;  
     const commentId = req.params.commentId;
-    const userId = req.user.userId;
 
     const commentUserId = await getCommentUserId(commentId);
 
@@ -75,8 +76,8 @@ async function deleteBlogComment(req, res, next) {
     }
 
     const comment = await deleteComment(
-      commentId,
       userId, // NOTE - this is an authenticated user ID checked by verifyUser
+      commentId,
     );
 
     return res.status(200).json({
