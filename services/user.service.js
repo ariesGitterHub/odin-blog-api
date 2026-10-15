@@ -46,7 +46,7 @@ async function createUser({
       lastName,
       email,
       passwordHash,
-      // role, // defaults to USER // defaults to USER for blog commenters, on blog writer it is either ADMIN or WRITER
+      // role, // defaults to USER // defaults to USER for blog commenters, on blog writer it will ADMIN, but the ADMIN can change a role into a WRITER if other people are later allowed to make posts
       emailVerified, // defaults to false
     },
   });
