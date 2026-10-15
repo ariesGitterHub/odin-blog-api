@@ -36,7 +36,7 @@ async function createUser({
   email,
   password,
   // role, // defaults to USER for blog commenters, on blog writer is admin
-  // emailVerified, // defaults to false // TODO - keep? Reset schema and db if not keeping
+  emailVerified, // defaults to false 
 }) {
   const passwordHash = await bcrypt.hash(password, 12);
 
@@ -46,8 +46,8 @@ async function createUser({
       lastName,
       email,
       passwordHash,
-      // role, // defaults to USER // defaults to USER for blog commenters, on blog writer is admin
-      // emailVerified, // defaults to false // TODO - keep? Reset schema and db if not keeping
+      // role, // defaults to USER // defaults to USER for blog commenters, on blog writer it is either ADMIN or WRITER
+      emailVerified, // defaults to false
     },
   });
 }
@@ -65,7 +65,7 @@ async function createUser({
 //       lastName: true,
 //       email: true,
 //       role: true,
-//       // emailVerified: true,
+//       emailVerified: true,
 //     },
 //   });
 // }
@@ -79,7 +79,7 @@ async function createUser({
 //       lastName: true,
 //       email: true,
 //       role: true,
-//       // emailVerified: true,
+//       emailVerified: true,
 //       // TODO - add more details from schema
 //     },
 //   });

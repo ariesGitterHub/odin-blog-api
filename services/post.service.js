@@ -42,14 +42,14 @@ async function getAllPostsAndComments() {
           },
         },
         orderBy: {
-          createdAt: "desc",
-          // createdAt: "asc",
+          // createdAt: "desc",
+          createdAt: "asc",
         },
       },
     },
     orderBy: {
-      // createdAt: "desc",
-      createdAt: "asc",
+      createdAt: "desc",
+      // createdAt: "asc",
     },
   });
 }
@@ -82,8 +82,8 @@ async function getPublishedPostsAndComments() {
           },
         },
         orderBy: {
-          createdAt: "desc",
-          // createdAt: "asc",
+          // createdAt: "desc",
+          createdAt: "asc",
         },
       },
     },

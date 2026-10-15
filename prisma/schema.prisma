@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  WRITER // New
+  ADMIN
+}
+
 model User {
   id            String    @id @default(uuid())
   firstName     String    @map("first_name")
@@ -14,7 +20,7 @@ model User {
   email         String    @unique
   passwordHash  String    @map("password_hash")
   role          UserRole  @default(USER)
-  // emailVerified Boolean   @default(false) @map("email_verified") // Not needed for this project, but keep as ref for next project
+  emailVerified Boolean   @default(false) @map("email_verified") 
   lastLoginAt   DateTime? @map("last_login_at")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
@@ -54,7 +60,3 @@ model Comment {
   @@map("comments")
 }
 
-enum UserRole {
-  USER
-  ADMIN
-}
