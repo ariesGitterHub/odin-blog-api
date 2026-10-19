@@ -1,7 +1,9 @@
 // const bcrypt = require("bcryptjs");
 require("dotenv/config");
 const { validationResult } = require("express-validator");
-const { formatValidationErrors } = require("../utils/format-validation-errors.utils.js");
+const {
+  formatValidationErrors,
+} = require("../utils/format-validation-errors.utils.js");
 const { verifyLogin, getUserById } = require("../services/auth.service.js");
 const {
   createUser,
@@ -13,7 +15,6 @@ const jwt = require("jsonwebtoken");
 
 async function signUp(req, res, next) {
   try {
-
     // TODO - where is this going? Where is it connecting to a route via middleware?
 
     //TODO - REMINDER , I need error pages to for this app.
@@ -47,7 +48,6 @@ async function signUp(req, res, next) {
       email: email.trim().toLowerCase(),
       password,
     });
-
 
     // TODO - possible security issue. Is the passwordHash returned in this object?
     return res.status(201).json({
@@ -98,8 +98,69 @@ async function logIn(req, res, next) {
       maxAge: 3600000,
     });
 
+    // TODO - is this return password hash too like createUser?
+    return res.status(200).json({
+      success: true,
+      user: user,
+    });
+  } catch (err) {
+    console.error("Login controller error:", err);
+    return res.status(500).json({ message: "Internal server error." });
+    // next(err);
+  }
+}
 
-// TODO - is this return password hash too like createUser?
+async function writerLogIn(req, res, next) {
+  try {
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) {
+      const errors = formatValidationErrors(validationErrors);
+
+      return res.status(400).json({
+        errors,
+      });
+    }
+
+    const { email, password } = req.body;
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const user = await verifyLogin(normalizedEmail, password);
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    // TEST
+    const allowedRoles = ["ADMIN", "WRITER"];
+    // if (user.role !== "ADMIN" && user.role !== "WRITER") { // Why does this fail
+    // if (user.role !== "ADMIN") { // But this works???
+      if (!allowedRoles.includes(user.role)) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: Insufficient permissions" });
+    }
+
+    const accessToken = jwt.sign(
+      {
+        userId: user.id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      },
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 3600000,
+    });
+
+    // TODO - is this return password hash too like createUser?
     return res.status(200).json({
       success: true,
       user: user,
@@ -145,7 +206,6 @@ async function logOut(req, res, next) {
 //   }
 // }
 
-
 // This tells me whether a user is currently logged in... so user...or null...
 
 // TODO - note duplicated jwt code...fix
@@ -174,7 +234,6 @@ async function getCurrentUser(req, res, next) {
 
     const user = await getUserById(authData.userId);
     console.log(user);
-    
 
     if (!user) {
       return res.status(200).json({ user: null });
@@ -189,6 +248,7 @@ async function getCurrentUser(req, res, next) {
 module.exports = {
   signUp,
   logIn,
+  writerLogIn,
   logOut,
   getCurrentUser,
 };

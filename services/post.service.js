@@ -26,6 +26,14 @@ async function getAllPostsAndComments() {
       postMessage: true,
       createdAt: true,
       updatedAt: true,
+      user: { // New
+        select: {
+          id: true, //New
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
       comments: {
         select: {
           id: true,
@@ -66,6 +74,14 @@ async function getPublishedPostsAndComments() {
       postMessage: true,
       createdAt: true,
       updatedAt: true,
+      user: { // New
+        select: {
+          id: true, //New
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
       comments: {
         select: {
           id: true,

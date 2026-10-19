@@ -9,7 +9,7 @@ const {
 } = require("../controllers/post.controller")
 
 const { verifyUser } = require("../middleware/verify-user.middleware");
-const { requireAdmin } = require("../middleware/require-admin.middleware");
+const { requireAdmin, requireWriter } = require("../middleware/require-role.middleware");
 
 const router = express.Router();
 
@@ -18,11 +18,13 @@ router.get("/public", getPublishedBlogPosts);
 
 // Get all blog posts, published or unpublished
 router.get("/", verifyUser, requireAdmin, getBlogPosts);
+// router.get("/", verifyUser, getBlogPosts);
+// router.get("/", getBlogPosts);
 
-router.post("/", verifyUser, requireAdmin, createNewBlogPost);
+router.post("/", verifyUser, requireWriter, createNewBlogPost);
 
-router.put("/:postId", verifyUser, requireAdmin, editBlogPost);
+router.put("/:postId", verifyUser, requireWriter, editBlogPost);
 
-router.delete("/:postId", verifyUser, requireAdmin, deleteBlogPost);
+router.delete("/:postId", verifyUser, requireWriter, deleteBlogPost);
 
 module.exports = router;

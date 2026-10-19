@@ -3,13 +3,17 @@ const express = require("express");
 const {
   signUp,
   logIn,
+  writerLogIn,
   logOut,
   getCurrentUser,
 } = require("../controllers/auth.controller");
 // const { verifyUser } = require("../middleware/verify-user.middleware");
 const passwordRules = require("../config/password-rules.config");
 const { validateSignUp } = require("../middleware/validate-signup.middleware.js");
-// const { verifyUser } = require("../middleware/verify-user.middleware.js");
+const {
+  requireAdmin,
+  requireWriter,
+} = require("../middleware/require-role.middleware");
 const router = express.Router();
 
 // NOTE - I didn't need to go from "route ➡ controller ➡ service ➡ database" here, rather just "route ➡ config ➡ json", it's just a tiny static configuration endpoint...
@@ -20,6 +24,8 @@ router.get("/password-rules", (req, res) => {
 // Auth Routes
 router.post("/signup", validateSignUp, signUp);
 router.post("/login", logIn);
+router.post("/writer-login", writerLogIn);
+// router.post("/login-writer", requireAdmin, logIn);
 router.post("/logout", logOut);
 // router.get("/me", verifyUser, getCurrentUser); // NOTE - verifyUser was causing 401 and stopping flow
 router.get("/me", getCurrentUser);
