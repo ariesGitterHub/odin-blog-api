@@ -5,6 +5,7 @@ const {
   getPublishedBlogPosts,
   createNewBlogPost,
   editBlogPost,
+  togglePublished,
   deleteBlogPost,
 } = require("../controllers/post.controller")
 
@@ -17,13 +18,15 @@ const router = express.Router();
 router.get("/public", getPublishedBlogPosts);
 
 // Get all blog posts, published or unpublished
-router.get("/", verifyUser, requireAdmin, getBlogPosts);
+router.get("/", verifyUser, requireWriter, getBlogPosts);
 // router.get("/", verifyUser, getBlogPosts);
 // router.get("/", getBlogPosts);
 
 router.post("/", verifyUser, requireWriter, createNewBlogPost);
 
 router.put("/:postId", verifyUser, requireWriter, editBlogPost);
+
+router.put("/:postId", verifyUser, requireWriter, togglePublished);
 
 router.delete("/:postId", verifyUser, requireWriter, deleteBlogPost);
 

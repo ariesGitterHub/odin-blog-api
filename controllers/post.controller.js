@@ -33,13 +33,13 @@ async function getPublishedBlogPosts(req, res, next) {
 
 async function createNewBlogPost(req, res, next) {
   try {
-    const { published, postTitle, postMessage } = req.body;
+    const { published, post_title, post_message } = req.body;
 
     const post = await createPost({
       userId: req.user.userId,
-      published,
-      postTitle,
-      postMessage,
+      published, // Should default to false
+      postTitle: post_title.trim(),
+      postMessage:  post_message.trim(),
     });
 
     return res.status(201).json({
@@ -70,6 +70,23 @@ async function editBlogPost(req, res, next) {
     next(err);
   }
 }
+
+async function togglePublished(req, res, next) {
+  try {
+    const postId = req.params.postId;
+
+    const { published } = req.body;
+
+    const post = await updatePost(postId, published);
+
+    return res.status(200).json({
+      post,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function deleteBlogPost(req, res, next) {
   try {
     const postId = req.params.postId;
@@ -92,5 +109,6 @@ module.exports = {
   getPublishedBlogPosts,
   createNewBlogPost,
   editBlogPost,
+  togglePublished,
   deleteBlogPost,
 }

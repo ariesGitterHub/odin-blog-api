@@ -26,13 +26,13 @@ async function seed() {
     },
   });
 
-  const user = await prisma.user.create({
+  const writer = await prisma.user.create({
     data: {
       firstName: "Joe",
-      lastName: "User",
-      email: "joe@user.com",
+      lastName: "Writer",
+      email: "joe@qwe.com",
       passwordHash: hash,
-      role: "USER",
+      role: "WRITER",
       emailVerified: true,
     },
   });

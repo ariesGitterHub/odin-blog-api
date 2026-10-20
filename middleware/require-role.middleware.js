@@ -7,14 +7,16 @@
 // }
 
 function requireAdmin(req, res, next) {
-  const allowedRoles = ["ADMIN"];
+  const adminRoleOnly = ["ADMIN"];
 
-  if (!req.user || !allowedRoles.includes(req.user.role)) {
+  if (!req.user || !adminRoleOnly.includes(req.user.role)) {
     // return res.sendStatus(403);
-    return res
-      .status(403)
-      // .json({ error: "Forbidden: Insufficient permissions" });
-      .json({ message: "Forbidden: Insufficient permissions" });
+    return (
+      res
+        .status(403)
+        // .json({ error: "Forbidden: Insufficient permissions" });
+        .json({ message: "Forbidden: Insufficient permissions" })
+    );
   }
   next();
 }
