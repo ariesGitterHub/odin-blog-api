@@ -37,7 +37,6 @@ function requireWriter(req, res, next) {
     // return res.sendStatus(403);
     return res
       .status(403)
-      // .json({ error: "Forbidden: Insufficient permissions" });
       .json({ message: "Forbidden: Insufficient permissions" });
   }
   next();
