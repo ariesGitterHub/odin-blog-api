@@ -110,13 +110,16 @@ async function getPublishedPostsAndComments() {
   });
 }
 
-async function updatePost(postId, published, postTitle, postMessage) {
+// async function updatePost(postId, published, postTitle, postMessage) {
+async function updatePost({userId, postId, postTitle, postMessage}) {
   return prisma.post.update({
     where: {
+      userId,
+      // user_id: userId,
       id: postId,
     },
     data: {
-      published,
+      // published,
       postTitle,
       postMessage,
     },
@@ -131,10 +134,22 @@ async function deletePost(postId) {
   })
 }
 
+async function getPostUserId(postId) {
+  return prisma.post.findFirst({
+    where: {
+      id: postId,
+    },
+    select: {
+      userId: true,
+    },
+  });
+}
+
 module.exports = {
   createPost,
   getAllPostsAndComments,
   getPublishedPostsAndComments,
   updatePost,
   deletePost,
+  getPostUserId,
 };

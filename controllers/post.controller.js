@@ -4,6 +4,7 @@ const {
   getPublishedPostsAndComments,
   updatePost,
   deletePost,
+  getPostUserId,
 } = require("../services/post.service.js");
 
 async function getBlogPosts(req, res, next) {
@@ -52,16 +53,29 @@ async function createNewBlogPost(req, res, next) {
 
 async function editBlogPost(req, res, next) {
   try {
+    const userId = req.user.userId;   
     const postId = req.params.postId;
 
-    const { published, postTitle, postMessage } = req.body;
+    const postUserId = await getPostUserId(postId);
 
-    const post = await updatePost(
+    if (!postUserId) {
+      return res.sendStatus(404);
+    }
+
+    if (userId !== postUserId.userId) {
+      return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
+    }
+
+    // const { published, postTitle, postMessage } = req.body;
+    const { post_title, post_message } = req.body;
+
+    const post = await updatePost({
+      userId, // NOTE - this is an authenticated user ID checked by verifyUser
       postId,
-      published,
-      postTitle,
-      postMessage,
-    );
+      // published,
+      postTitle: post_title.trim(),
+      postMessage: post_message.trim(),
+    });
 
     return res.status(200).json({
       post,
