@@ -26,7 +26,7 @@ router.post("/", verifyUser, requireWriter, createNewBlogPost);
 
 router.put("/:postId", verifyUser, requireWriter, editBlogPost);
 
-router.put("/:postId", verifyUser, requireWriter, togglePublished);
+router.put("/publish/:postId", verifyUser, requireWriter, togglePublished);
 
 router.delete("/:postId", verifyUser, requireWriter, deleteBlogPost);
 

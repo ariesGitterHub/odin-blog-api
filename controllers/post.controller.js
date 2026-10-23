@@ -3,6 +3,7 @@ const {
   getAllPostsAndComments,
   getPublishedPostsAndComments,
   updatePost,
+  updatePublishedPost,
   deletePost,
   getPostUserId,
 } = require("../services/post.service.js");
@@ -87,11 +88,22 @@ async function editBlogPost(req, res, next) {
 
 async function togglePublished(req, res, next) {
   try {
+    const userId = req.user.userId;
     const postId = req.params.postId;
+
+    const postUserId = await getPostUserId(postId);
+
+    if (!postUserId) {
+      return res.sendStatus(404);
+    }
+
+    if (userId !== postUserId.userId) {
+      return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
+    }
 
     const { published } = req.body;
 
-    const post = await updatePost(postId, published);
+    const post = await updatePublishedPost(userId, postId, published);
 
     return res.status(200).json({
       post,
@@ -103,9 +115,21 @@ async function togglePublished(req, res, next) {
 
 async function deleteBlogPost(req, res, next) {
   try {
+    const userId = req.user.userId;
     const postId = req.params.postId;
 
+    const postUserId = await getPostUserId(postId);
+
+    if (!postUserId) {
+      return res.sendStatus(404);
+    }
+
+    if (userId !== postUserId.userId) {
+      return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
+    }
+
     const post = await deletePost(
+      userId,
       postId,
     );
 

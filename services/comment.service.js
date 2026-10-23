@@ -16,7 +16,7 @@ async function createComment({ userId, postId, commentMessage }) {
   });
 }
 
-async function updateComment({userId, commentId, commentMessage}) {
+async function updateComment({ userId, commentId, commentMessage }) {
   return prisma.comment.update({
     where: {
       userId,      
