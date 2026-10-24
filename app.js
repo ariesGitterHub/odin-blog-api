@@ -80,10 +80,14 @@ const commentRoutes = require("./routes/comment.routes.js");
 // User routes
 const userRoutes = require("./routes/user.routes.js");
 
+// Admin routes
+const adminRoutes = require("./routes/admin.routes.js");
+
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/post", commentRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/admin", adminRoutes);
 
 // *** API root / health check (API root endpoint)
 

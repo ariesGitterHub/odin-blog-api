@@ -13,6 +13,7 @@ async function verifyLogin(email, password) {
       email: true,
       passwordHash: true, // I need passwordHash temporarily because bcrypt.compare() needs it
       role: true,
+      // lastLoginAt: true,
     },
   });
 
@@ -33,6 +34,7 @@ async function verifyLogin(email, password) {
     lastName: user.lastName, // New added for frontend
     email: user.email,
     role: user.role,
+    // lastLoginAt: last_login_at,
   };
 }
 

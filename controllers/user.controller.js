@@ -8,22 +8,15 @@ const {
   // createUser,
   checkIfEmailAlreadyExists,
   // getUser,
-  // getUsers, // TODO - add to admin controller later
   updateUser,
   deleteUser,
 } = require("../services/user.service.js");
 
+// Not needed mow, maybe if I make an admin page...
+
 // Not needed now, maybe if I make an admin page...
 // NOTE - since the httpOnly cookie has the user's info, is this even needed if an admin page is not created???
 // async function getUser(req, res, next) {
-//   try {
-//   } catch (err) {
-//     next(err);
-//   }
-// }
-
-// Not needed mow, maybe if I make an admin page...
-// async function getUsers(req, res, next) {
 //   try {
 //   } catch (err) {
 //     next(err);
@@ -107,7 +100,6 @@ async function deleteProfile(req, res, next) {
 
 module.exports = {
   // getUser, // TODO - later???
-  // getUsers, // TODO - later???
   updateProfile,
   deleteProfile,
 };

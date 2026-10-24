@@ -8,6 +8,7 @@ const { verifyLogin, getUserById } = require("../services/auth.service.js");
 const {
   createUser,
   checkIfEmailExistsForSignUp,
+  updateLastLoginAt,
 } = require("../services/user.service.js");
 const jwt = require("jsonwebtoken");
 
@@ -58,6 +59,8 @@ async function signUp(req, res, next) {
   }
 }
 
+
+// TODO - blow is the base user login for "blog-reader"
 async function logIn(req, res, next) {
   try {
     const validationErrors = validationResult(req);
@@ -78,6 +81,12 @@ async function logIn(req, res, next) {
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    // Adds lastLoginAt to users in db
+    if (user) {
+      const userId = user.id;
+      await updateLastLoginAt(userId);
     }
 
     const accessToken = jwt.sign(
@@ -140,6 +149,12 @@ async function writerLogIn(req, res, next) {
       return res
         .status(403)
         .json({ message: "Forbidden: Insufficient permissions" });
+    }
+
+    // Adds lastLoginAt to users in db
+    if (user) {
+      const userId = user.id;
+      await updateLastLoginAt(userId);
     }
 
     const accessToken = jwt.sign(

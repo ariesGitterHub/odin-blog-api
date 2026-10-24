@@ -28,6 +28,26 @@ async function checkIfEmailAlreadyExists(email, userId) {
   });
 }
 
+async function getAllUsers() {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      emailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+      lastLoginAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
+
 // createUser is only for creating a commenter, not a poster 
 // The blog writer/poster already exist in the db via seed.js, so no need to create for them
 async function createUser({
@@ -52,6 +72,7 @@ async function createUser({
   });
 }
 
+
 // NOTE - getUser and getUsers - not needed now, maybe if I make an admin page...
 
 // async function getUser(userId) {
@@ -70,20 +91,6 @@ async function createUser({
 //   });
 // }
 
-// Not needed now, maybe if I make an admin page...
-// async function getUsers() {
-//   return prisma.user.findMany({
-//     select: {
-//       id: true,
-//       firstName: true,
-//       lastName: true,
-//       email: true,
-//       role: true,
-//       emailVerified: true,
-//       // TODO - add more details from schema
-//     },
-//   });
-// }
 
 async function updateUser(userId, userData) {
   const { password, ...profileData } = userData;
@@ -109,6 +116,18 @@ async function updateUser(userId, userData) {
   });
 }
 
+async function updateLastLoginAt(userId) {
+  // Update last login date
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      lastLoginAt: new Date(),
+    },
+  });
+}
+
 async function deleteUser(userId) {
   return prisma.user.delete({
     where: {
@@ -120,9 +139,11 @@ async function deleteUser(userId) {
 module.exports = {
   checkIfEmailExistsForSignUp,
   checkIfEmailAlreadyExists,
+  getAllUsers,
   createUser,
+
   // getUser,
-  // getUsers,
   updateUser,
+  updateLastLoginAt,
   deleteUser,
 };

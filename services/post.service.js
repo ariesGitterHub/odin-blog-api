@@ -110,8 +110,16 @@ async function getPublishedPostsAndComments() {
   });
 }
 
-// async function updatePost(postId, published, postTitle, postMessage) {
+// NOTE - because this has been a source of confusion... 
+// In the function below the { } in the function parameters tells JavaScript to expect one object and extract the specified properties from it.
 async function updatePost({ userId, postId, postTitle, postMessage }) {
+// So for above, JavaScript receives one object and extracts its four properties into local variables, e.g.,
+// - userId gets 1.
+// - postId gets 42.
+// - postTitle gets "My Updated Title".
+// - postMessage gets "My updated message.".
+// Inside the function, you can use those variables directly without repeatedly writing object.userId, object.postId, and so on.
+// Notice that the curly braces in the function parameters are not the same as the braces in the Prisma query. The first set performs destructuring; the others define objects.
   return prisma.post.update({
     where: {
       userId,
@@ -126,17 +134,34 @@ async function updatePost({ userId, postId, postTitle, postMessage }) {
   });
 }
 
+// Below, this function accepts three separate arguments, in a specific order.
 async function updatePublishedPost( userId, postId, published ) {
+  // Above, JavaScript assigns the arguments by position:
+  // Argument	    Parameter
+  // 1	          userId
+  // 42	          postId
+  // true	        published
+  // ... There is no object to destructure, so you don't need { } around the parameters.
   return prisma.post.update({
     where: {
       userId,
       id: postId,
     },
     data: {
-      published
+      published,
     },
   });
 }
+
+// NOTE - Both approaches above work. The main difference is how you pass arguments to the function.
+//*** Which approach should you use in the blog API?
+// For your service layer, lean toward object destructuring when a function accepts several related values, as updatePost does.
+
+// It also gives you flexibility if you later add another field, such as published, to that function. You can add a property without having to remember the position of every argument at every call site.
+
+// The second function has only three parameters, so individual arguments are perfectly reasonable. However, consistency across related service functions can also be valuable.
+
+// REMINDER - using { } in the function parameters does not change how Prisma updates the database. It only changes how JavaScript receives and extracts the arguments before executing the Prisma query.
 
 async function deletePost(userId, postId) {
   return prisma.post.delete({
