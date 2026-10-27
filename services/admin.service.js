@@ -1,5 +1,5 @@
-const prisma = require("../lib/prisma");
-const bcrypt = require("bcryptjs");
+// const prisma = require("../lib/prisma");
+// const bcrypt = require("bcryptjs");
 
 // async function getAllUsers() {
 //   return prisma.user.findMany({
@@ -20,6 +20,6 @@ const bcrypt = require("bcryptjs");
 //   });
 // }
 
-module.exports = {
-  getAllUsers,
-};
+// module.exports = {
+//   getAllUsers,
+// };

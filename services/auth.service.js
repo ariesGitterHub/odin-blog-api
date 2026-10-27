@@ -38,6 +38,7 @@ async function verifyLogin(email, password) {
   };
 }
 
+// NOTE - virtually similar to user.service.js function getUser, but that function includes emailVerified
 async function getUserById(userId) {
   return prisma.user.findUnique({
     where: {

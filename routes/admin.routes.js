@@ -2,6 +2,8 @@ const express = require("express");
 
 const {
   getUsersForAdmin,
+  getOneUserForAdmin,
+  updateUserByAdmin,
   deleteUserByAdmin,
 } = require("../controllers/admin.controller.js");
 
@@ -14,18 +16,22 @@ const router = express.Router();
 
 router.get(
   "/",
-  //  verifyUser,
-  //   requireAdmin,
+   verifyUser,
+    requireAdmin,
      getUsersForAdmin);
 
-// router.put("/", verifyUser, requireAdmin, createxxx);
+router.get("/:userId", verifyUser, requireAdmin, getOneUserForAdmin);
 
-// router.put("/:userId", verifyUser, requireAdmin, editxxx);
+router.put(
+  "/:userId",
+   verifyUser,
+    requireAdmin,
+     updateUserByAdmin);
 
 router.delete(
   "/:userId",
-  //  verifyUser,
-  //   requireAdmin,
+   verifyUser,
+    requireAdmin,
      deleteUserByAdmin);
 
 module.exports = router;

@@ -42,8 +42,28 @@ async function getAllUsers() {
       lastLoginAt: true,
     },
     orderBy: {
-      createdAt: "desc",
+      lastName: "asc",
     },
+  });
+}
+
+// NOTE - virtually similar to auth.service.js function getUserById, but that function lacks emailVerified
+async function getUser(userId) {
+  return prisma.user.findFirst({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      emailVerified: true,
+      // createdAt: true,
+      // updatedAt: true,
+      // lastLoginAt: true,
+    }
   });
 }
 
@@ -140,9 +160,8 @@ module.exports = {
   checkIfEmailExistsForSignUp,
   checkIfEmailAlreadyExists,
   getAllUsers,
+  getUser,  
   createUser,
-
-  // getUser,
   updateUser,
   updateLastLoginAt,
   deleteUser,
