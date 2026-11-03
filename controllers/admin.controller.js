@@ -1,5 +1,7 @@
-// const bcrypt = require("bcryptjs"); // TODO - should this be handled in the service? Answer is NO!
+// REMINDER -  bcrypt should used and be handled in the service
 require("dotenv/config");
+
+// TODO - is below needed?
 // const { validationResult } = require("express-validator");
 // const {
 //   formatValidationErrors,
@@ -41,7 +43,7 @@ async function updateUserByAdmin(req, res, next) {
   try {
     const userId = req.params.userId;
 
-    const validRoles = ["USER", "WRITER", "ADMIN"];
+    const validRoles = ["USER", "WRITER", "ADMIN"]; // TODO - what about this!?!?!?
 
     const { first_name, last_name, role, email, password } = req.body;
 
@@ -56,8 +58,7 @@ async function updateUserByAdmin(req, res, next) {
     }
 
     if (role) {
-      // updateData.role = last_name.trim();
-      updateData.role = role.trim();
+      updateData.role = role;
     }
 
     if (email) {

@@ -141,7 +141,7 @@ async function writerLogIn(req, res, next) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    // TEST
+    // NOTE - below is what separates the logIn above from the bespoke writerLogIn used on Blog Writer
     const allowedRoles = ["ADMIN", "WRITER"];
     // if (user.role !== "ADMIN" && user.role !== "WRITER") { // Why does this fail
     // if (user.role !== "ADMIN") { // But this works???

@@ -23,8 +23,9 @@ router.get("/password-rules", (req, res) => {
 
 // Auth Routes
 router.post("/signup", validateSignUp, signUp);
-// Note - below is for Blog Writer, possible TODO - change the name to match pattern of writerLogin
+// NOTE - below is for Blog Reader, possible TODO - change the name to match pattern of writerLogin
 router.post("/login", logIn);
+// NOTE - below is Blog Writer
 router.post("/writer-login", writerLogIn);
 // router.post("/login-writer", requireAdmin, logIn);
 router.post("/logout", logOut);

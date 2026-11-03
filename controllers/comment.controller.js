@@ -42,7 +42,6 @@ async function editBlogComment(req, res, next) {
       return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
     }
 
-    // const { commentMessage }  = req.body;
     const { comment_message } = req.body;
 
     const comment = await updateComment({
@@ -71,6 +70,7 @@ async function deleteBlogComment(req, res, next) {
       return res.sendStatus(404);
     }
 
+    // Checks for comment ownership
     if (userId !== commentUserId.userId) {
       return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
     }
