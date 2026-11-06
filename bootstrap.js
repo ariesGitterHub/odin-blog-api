@@ -11,7 +11,7 @@ const server = app.listen(PORT, () => {
 });
 
 // Graceful shutdown (important for Render restarts)
-// NoTE - The SIGTERM handling isn't specifically a Render hack. It's a generally useful pattern for a Node server running under a process manager/container platform, so it's worth including into this project.
+// NOTE - The SIGTERM handling isn't specifically a Render hack. It's a generally useful pattern for a Node server running under a process manager/container platform, so it's worth including into this project.
 process.on("SIGTERM", () => {
   console.log("SIGTERM received. Shutting down gracefully...");
   server.close(() => process.exit(0));

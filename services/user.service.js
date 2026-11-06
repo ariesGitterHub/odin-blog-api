@@ -79,7 +79,7 @@ async function createUser({
   email,
   password,
   // role, // defaults to USER for blog commenters, on blog writer is admin
-  emailVerified, // defaults to false
+  // emailVerified, // defaults to false
 }) {
   const passwordHash = await bcrypt.hash(password, 12);
 

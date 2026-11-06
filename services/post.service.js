@@ -1,9 +1,3 @@
-// create post ✅
-// get all posts ✅
-// get one post // TODO - do I need this? Likely not...
-// update post ✅
-// delete post ✅
-
 const prisma = require("../lib/prisma");
 
 async function createPost({ userId, published, postTitle, postMessage }) {
@@ -26,9 +20,9 @@ async function getAllPostsAndComments() {
       postMessage: true,
       createdAt: true,
       updatedAt: true,
-      user: { // New
+      user: { 
         select: {
-          id: true, //New
+          id: true, 
           email: true,
           firstName: true,
           lastName: true,
@@ -42,7 +36,7 @@ async function getAllPostsAndComments() {
           updatedAt: true,
           user: {
             select: {
-              id: true, //New
+              id: true, 
               email: true,
               firstName: true,
               lastName: true,
@@ -74,9 +68,9 @@ async function getPublishedPostsAndComments() {
       postMessage: true,
       createdAt: true,
       updatedAt: true,
-      user: { // New
+      user: { 
         select: {
-          id: true, //New
+          id: true, 
           email: true,
           firstName: true,
           lastName: true,
@@ -90,8 +84,8 @@ async function getPublishedPostsAndComments() {
           updatedAt: true,
           user: {
             select: {
-              id: true, // New, need for edit button
-              email: true, // TODO - Use this?? Likely not
+              id: true, // Need for edit button
+              // email: true, // Not using this
               firstName: true,
               lastName: true,
             },
@@ -113,7 +107,8 @@ async function getPublishedPostsAndComments() {
 // NOTE - because this has been a source of confusion... 
 // In the function below the { } in the function parameters tells JavaScript to expect one object and extract the specified properties from it.
 async function updatePost({ userId, postId, postTitle, postMessage }) {
-// So for above, JavaScript receives one object and extracts its four properties into local variables, e.g.,
+// So for above, JavaScript receives one object and extracts its four properties into local variables, 
+// e.g.,
 // - userId gets 1.
 // - postId gets 42.
 // - postTitle gets "My Updated Title".

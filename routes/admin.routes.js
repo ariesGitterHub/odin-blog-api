@@ -9,30 +9,15 @@ const {
 
 const { verifyUser } = require("../middleware/verify-user.middleware.js");
 
-const {
-  requireAdmin,
-
-} = require("../middleware/require-role.middleware");
+const { requireAdmin } = require("../middleware/require-role.middleware");
 const router = express.Router();
 
-router.get(
-  "/",
-   verifyUser,
-    requireAdmin,
-     getUsersForAdmin);
+router.get("/", verifyUser, requireAdmin, getUsersForAdmin);
 
 router.get("/:userId", verifyUser, requireAdmin, getOneUserForAdmin);
 
-router.put(
-  "/:userId",
-   verifyUser,
-    requireAdmin,
-     updateUserByAdmin);
+router.put("/:userId", verifyUser, requireAdmin, updateUserByAdmin);
 
-router.delete(
-  "/:userId",
-   verifyUser,
-    requireAdmin,
-     deleteUserByAdmin);
+router.delete("/:userId", verifyUser, requireAdmin, deleteUserByAdmin);
 
 module.exports = router;

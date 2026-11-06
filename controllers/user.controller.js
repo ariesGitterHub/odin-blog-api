@@ -1,30 +1,8 @@
-require("dotenv/config");
-const { validationResult } = require("express-validator");
 const {
-  formatValidationErrors,
-} = require("../utils/format-validation-errors.utils.js");
-const {
-  // createUser,
   checkIfEmailAlreadyExists,
-  // getUser,
   updateUser,
   deleteUser,
 } = require("../services/user.service.js");
-
-// Not needed mow, maybe if I make an admin page...
-
-// Not needed now, maybe if I make an admin page...
-// NOTE - since the httpOnly cookie has the user's info, is this even needed if an admin page is not created???
-// async function getUser(req, res, next) {
-//   try {
-//   } catch (err) {
-//     next(err);
-//   }
-// }
-
-// Do I need to push req.body variables into updateData?
-// MOST IMPORTANTLY: What data format is best for both frontend and backend for updateProfile? Use userId, userData, or userID with all the items delineated out?
-// Remember that updateProfile and deleteProfile will need the user's id (and that deleteProfile will need a guard against role === "ADMIN" from self deleting...but that comes later)
 
 async function updateProfile(req, res, next) {
   try {
@@ -88,7 +66,7 @@ async function deleteProfile(req, res, next) {
       });
     }
     console.log("userId = ", userId);
-    
+
     await deleteUser(userId);
 
     return res.sendStatus(204);
@@ -98,7 +76,6 @@ async function deleteProfile(req, res, next) {
 }
 
 module.exports = {
-  // getUser, // TODO - later???
   updateProfile,
   deleteProfile,
 };

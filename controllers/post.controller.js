@@ -8,14 +8,19 @@ const {
   getPostUserId,
 } = require("../services/post.service.js");
 
+const { validationResult } = require("express-validator");
+
+const {
+  formatValidationErrors,
+} = require("../utils/format-validation-errors.utils.js");
+
 async function getBlogPosts(req, res, next) {
   try {
     const posts = await getAllPostsAndComments();
 
     return res.status(200).json({
       posts,
-    })
-    
+    });
   } catch (err) {
     next(err);
   }
@@ -35,13 +40,15 @@ async function getPublishedBlogPosts(req, res, next) {
 
 async function createNewBlogPost(req, res, next) {
   try {
-    const { published, post_title, post_message } = req.body;
+    // Moved publish/unpublish to togglePublished
+    // const { published, post_title, post_message } = req.body;
+    const { post_title, post_message } = req.body;
 
     const post = await createPost({
       userId: req.user.userId,
-      published, // Should default to false
+      // published, // Should default to false, comment out
       postTitle: post_title.trim(),
-      postMessage:  post_message.trim(),
+      postMessage: post_message.trim(),
     });
 
     return res.status(201).json({
@@ -54,7 +61,7 @@ async function createNewBlogPost(req, res, next) {
 
 async function editBlogPost(req, res, next) {
   try {
-    const userId = req.user.userId;   
+    const userId = req.user.userId;
     const postId = req.params.postId;
 
     const postUserId = await getPostUserId(postId);
@@ -67,6 +74,7 @@ async function editBlogPost(req, res, next) {
       return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
     }
 
+    // Moved publish/unpublish to togglePublished
     // const { published, postTitle, postMessage } = req.body;
     const { post_title, post_message } = req.body;
 
@@ -90,6 +98,13 @@ async function togglePublished(req, res, next) {
   try {
     const userId = req.user.userId;
     const postId = req.params.postId;
+
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) {
+      const errors = formatValidationErrors(validationErrors);
+      return res.status(400).json({ errors });
+    }
 
     const postUserId = await getPostUserId(postId);
 
@@ -128,19 +143,15 @@ async function deleteBlogPost(req, res, next) {
       return res.sendStatus(403); // as in... "I know who you are, but you're not allowed to do this."
     }
 
-    const post = await deletePost(
-      userId,
-      postId,
-    );
+    const post = await deletePost(userId, postId);
 
     return res.status(200).json({
       post,
     });
-      } catch (err) {
+  } catch (err) {
     next(err);
   }
 }
-
 
 module.exports = {
   getBlogPosts,
@@ -149,4 +160,4 @@ module.exports = {
   editBlogPost,
   togglePublished,
   deleteBlogPost,
-}
+};

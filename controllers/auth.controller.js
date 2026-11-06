@@ -1,13 +1,17 @@
 const { validationResult } = require("express-validator");
+
 const {
   formatValidationErrors,
 } = require("../utils/format-validation-errors.utils.js");
+
 const { verifyLogin, getUserById } = require("../services/auth.service.js");
+
 const {
   createUser,
   checkIfEmailExistsForSignUp,
   updateLastLoginAt,
 } = require("../services/user.service.js");
+
 const jwt = require("jsonwebtoken");
 
 const allowedRoles = ["ADMIN", "WRITER"];
@@ -113,6 +117,7 @@ async function logIn(req, res, next) {
     // 4. Until that JWT expires, middleware that trusts only its role claim could continue granting admin access.
     // The one-hour expiration limits this exposure, but it doesn't eliminate it.
 
+    // Now using helper function issueAccessToken()
     // const accessToken = jwt.sign(
     //   {
     //     userId: user.id,
@@ -182,6 +187,7 @@ async function writerLogIn(req, res, next) {
       await updateLastLoginAt(userId);
     }
 
+    // Now using helper function issueAccessToken()
     // const accessToken = jwt.sign(
     //   {
     //     userId: user.id,
@@ -233,7 +239,6 @@ async function logOut(req, res, next) {
   }
 }
 // Note this code below was not returning null for non-auth users. It needs to though or this controller that is meant to check if a current user is authenticated via /api/auth/me will crash the app. Null is a needed response.
-
 // async function getCurrentUser(req, res,next) {
 //   try {
 //     const user = await getUserById(req.user.userId);

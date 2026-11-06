@@ -55,6 +55,8 @@ async function updateUserByAdmin(req, res, next) {
       updateData.lastName = last_name.trim();
     }
 
+
+    // Now include validRoles
     // if (role) {
     //   updateData.role = role;
     // }

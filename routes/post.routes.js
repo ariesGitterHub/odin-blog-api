@@ -10,7 +10,8 @@ const {
 } = require("../controllers/post.controller")
 
 const { verifyUser } = require("../middleware/verify-user.middleware");
-const { requireAdmin, requireWriter } = require("../middleware/require-role.middleware");
+const { requireWriter } = require("../middleware/require-role.middleware");
+const { validateTogglePublished } = require("../middleware/validate-toggle-published.middleware");
 
 const router = express.Router();
 
@@ -19,14 +20,18 @@ router.get("/public", getPublishedBlogPosts);
 
 // Get all blog posts, published or unpublished
 router.get("/", verifyUser, requireWriter, getBlogPosts);
-// router.get("/", verifyUser, getBlogPosts);
-// router.get("/", getBlogPosts);
 
 router.post("/", verifyUser, requireWriter, createNewBlogPost);
 
 router.put("/:postId", verifyUser, requireWriter, editBlogPost);
 
-router.put("/publish/:postId", verifyUser, requireWriter, togglePublished);
+router.put(
+  "/publish/:postId",
+  verifyUser,
+  requireWriter,
+  validateTogglePublished, 
+  togglePublished,
+);
 
 router.delete("/:postId", verifyUser, requireWriter, deleteBlogPost);
 

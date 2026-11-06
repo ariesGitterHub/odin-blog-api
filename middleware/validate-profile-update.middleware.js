@@ -4,7 +4,7 @@ const passwordRules = require("../config/password-rules.config.js");
 const emailValidator = check("email")
   .optional() // REMINDER - this makes the check conditional, so it is only used if something is typed into the email field
   .trim()
-  // .notEmpty() // REMINDER - this cannot exits along side optional(), this requires that the field have a typed string
+  // .notEmpty() // REMINDER - this cannot exist along with optional(), this requires that the field have a typed string
   // .withMessage("Email cannot be empty")
   .isEmail()
   .withMessage("Invalid email format");

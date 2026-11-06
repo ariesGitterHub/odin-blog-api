@@ -1,11 +1,13 @@
 const express = require("express");
+
 const {
   updateProfile,
   deleteProfile,
 } = require("../controllers/user.controller");
+
 const {
   validateProfileUpdate,
-} = require("../middleware/validate-profile-update.middleware.js")
+} = require("../middleware/validate-profile-update.middleware.js");
 
 const { verifyUser } = require("../middleware/verify-user.middleware.js");
 
