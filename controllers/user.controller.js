@@ -1,4 +1,3 @@
-// const bcrypt = require("bcryptjs"); // TODO - should this be handled in the service? Answer is NO!
 require("dotenv/config");
 const { validationResult } = require("express-validator");
 const {

@@ -1,5 +1,3 @@
-// const bcrypt = require("bcryptjs");
-require("dotenv/config");
 const { validationResult } = require("express-validator");
 const {
   formatValidationErrors,
@@ -12,13 +10,12 @@ const {
 } = require("../services/user.service.js");
 const jwt = require("jsonwebtoken");
 
+const allowedRoles = ["ADMIN", "WRITER"];
+
 // NOTE - Because I'm using Express 5, I don't need the try/catch merely to forward rejected async operations to your error middleware. However, keeping the try/catch for now is fine.
 
 async function signUp(req, res, next) {
   try {
-    // TODO - where is this going? Where is it connecting to a route via middleware?
-
-    //TODO - REMINDER , I need error pages to for this app.
     const validationErrors = validationResult(req);
 
     if (!validationErrors.isEmpty()) {
@@ -50,7 +47,6 @@ async function signUp(req, res, next) {
       password,
     });
 
-    // TODO - possible security issue. Is the passwordHash returned in this object?
     return res.status(201).json({
       user,
     });
@@ -59,8 +55,28 @@ async function signUp(req, res, next) {
   }
 }
 
+// D.R.Y. helper function
+function issueAccessToken(res, user) {
+  const accessToken = jwt.sign(
+    {
+      userId: user.id,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    },
+  );
 
-// TODO - blow is the base user login for "blog-reader"
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 3600000,
+  });
+}
+
+// NOTE - below is the base user login for "blog-reader"
 async function logIn(req, res, next) {
   try {
     const validationErrors = validationResult(req);
@@ -84,38 +100,48 @@ async function logIn(req, res, next) {
     }
 
     // Adds lastLoginAt to users in db
-    if (user) {
-      const userId = user.id;
-      await updateLastLoginAt(userId);
-    }
+    // if (user) {
+    //   const userId = user.id;
+    // await updateLastLoginAt(userId);
+    await updateLastLoginAt(user.id);
+    // }
 
-    const accessToken = jwt.sign(
-      {
-        userId: user.id,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      },
-    );
+    // NOTE - a big note too, because "role" is in the JWT, changing a user's role in the database won't automatically update an already-issued token. E.g.:
+    // 1. A user logs in as ADMIN.
+    // 2. An admin changes that user's role to USER.
+    // 3. The existing JWT still contains ADMIN.
+    // 4. Until that JWT expires, middleware that trusts only its role claim could continue granting admin access.
+    // The one-hour expiration limits this exposure, but it doesn't eliminate it.
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 3600000,
-    });
+    // const accessToken = jwt.sign(
+    //   {
+    //     userId: user.id,
+    //     role: user.role,
+    //   },
+    //   process.env.JWT_SECRET,
+    //   {
+    //     expiresIn: "1h",
+    //   },
+    // );
 
-    // TODO - is this return password hash too like createUser?
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "lax",
+    //   maxAge: 3600000,
+    // });
+
+    issueAccessToken(res, user);
+
     return res.status(200).json({
       success: true,
       user: user,
     });
   } catch (err) {
-    console.error("Login controller error:", err);
-    return res.status(500).json({ message: "Internal server error." });
-    // next(err);
+    // Don't bypass my centralized error middleware by use the two lines below
+    // console.error("Login controller error:", err);
+    // return res.status(500).json({ message: "Internal server error." });
+    next(err);
   }
 }
 
@@ -142,10 +168,9 @@ async function writerLogIn(req, res, next) {
     }
 
     // NOTE - below is what separates the logIn above from the bespoke writerLogIn used on Blog Writer
-    const allowedRoles = ["ADMIN", "WRITER"];
-    // if (user.role !== "ADMIN" && user.role !== "WRITER") { // Why does this fail
-    // if (user.role !== "ADMIN") { // But this works???
-      if (!allowedRoles.includes(user.role)) {
+
+    // const allowedRoles = ["ADMIN", "WRITER"]; // Moved to top
+    if (!allowedRoles.includes(user.role)) {
       return res
         .status(403)
         .json({ message: "Forbidden: Insufficient permissions" });
@@ -157,35 +182,39 @@ async function writerLogIn(req, res, next) {
       await updateLastLoginAt(userId);
     }
 
-    const accessToken = jwt.sign(
-      {
-        userId: user.id,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      },
-    );
+    // const accessToken = jwt.sign(
+    //   {
+    //     userId: user.id,
+    //     role: user.role,
+    //   },
+    //   process.env.JWT_SECRET,
+    //   {
+    //     expiresIn: "1h",
+    //   },
+    // );
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 3600000,
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "lax",
+    //   maxAge: 3600000,
+    // });
 
-    // TODO - is this return password hash too like createUser?
+    issueAccessToken(res, user);
+
     return res.status(200).json({
       success: true,
       user: user,
     });
   } catch (err) {
-    console.error("Login controller error:", err);
-    return res.status(500).json({ message: "Internal server error." });
-    // next(err);
+    // Don't bypass my centralized error middleware by use the two lines below
+    // console.error("Login controller error:", err);
+    // return res.status(500).json({ message: "Internal server error." });
+    next(err);
   }
 }
+
+// NOTE - the cookie-clearing options need to match the original cookie's relevant attributes, particularly its path and domain if you set either when creating it.My current cookie doesn't specify either, so the default path behavior should be consistent.Also, clearing the cookie doesn't invalidate the JWT itself. It simply removes the browser's copy. This might be okay, given the one-hour token expiration...
 
 async function logOut(req, res, next) {
   try {
@@ -222,8 +251,6 @@ async function logOut(req, res, next) {
 // }
 
 // This tells me whether a user is currently logged in... so user...or null...
-
-// TODO - note duplicated jwt code...fix
 async function getCurrentUser(req, res, next) {
   try {
     const token = req.cookies.accessToken;
@@ -235,7 +262,11 @@ async function getCurrentUser(req, res, next) {
     let authData;
 
     try {
-      authData = jwt.verify(token, process.env.JWT_SECRET);
+      // authData = jwt.verify(token, process.env.JWT_SECRET);
+      // The jwt.sign() currently uses the default HMAC SHA-256 algorithm, so this makes my verification expectations explicit.
+      authData = jwt.verify(token, process.env.JWT_SECRET, {
+        algorithms: ["HS256"],
+      });
     } catch (err) {
       if (
         err.name === "TokenExpiredError" ||

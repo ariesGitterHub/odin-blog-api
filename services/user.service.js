@@ -41,15 +41,19 @@ async function getAllUsers() {
       updatedAt: true,
       lastLoginAt: true,
     },
-    orderBy: {
-      lastName: "asc",
-    },
+    // orderBy: {
+    //   lastName: "asc",
+    // },
+    // Add firstName as a secondary sort
+    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
   });
 }
 
 // NOTE - virtually similar to auth.service.js function getUserById, but that function lacks emailVerified
 async function getUser(userId) {
-  return prisma.user.findFirst({
+  // return prisma.user.findFirst({
+  // Since id is unique, use findUnique() as it communicates that I am looking up one particular record by its unique identifier; findUnique() returns null when no user exists, just like current findFirst().
+  return prisma.user.findUnique({
     where: {
       id: userId,
     },
@@ -63,12 +67,11 @@ async function getUser(userId) {
       // createdAt: true,
       // updatedAt: true,
       // lastLoginAt: true,
-    }
+    },
   });
 }
 
-
-// createUser is only for creating a commenter, not a poster 
+// createUser is only for creating a commenter, not a poster
 // The blog writer/poster already exist in the db via seed.js, so no need to create for them
 async function createUser({
   firstName,
@@ -76,7 +79,7 @@ async function createUser({
   email,
   password,
   // role, // defaults to USER for blog commenters, on blog writer is admin
-  emailVerified, // defaults to false 
+  emailVerified, // defaults to false
 }) {
   const passwordHash = await bcrypt.hash(password, 12);
 
@@ -87,34 +90,22 @@ async function createUser({
       email,
       passwordHash,
       // role, // defaults to USER // defaults to USER for blog commenters, on blog writer it will ADMIN, but the ADMIN can change a role into a WRITER if other people are later allowed to make posts
-      emailVerified, // defaults to false
+      // emailVerified, // defaults to false
+    },
+    // User-returning services do not need to return everything such as passwordHash
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      // role: true,
     },
   });
 }
 
-
-// NOTE - getUser and getUsers - not needed now, maybe if I make an admin page...
-
-// async function getUser(userId) {
-//   return prisma.user.findUnique({
-//     where: {
-//       id: userId,
-//     },
-//     select: {
-//       id: true,
-//       firstName: true,
-//       lastName: true,
-//       email: true,
-//       role: true,
-//       emailVerified: true,
-//     },
-//   });
-// }
-
-
 async function updateUser(userId, userData) {
   const { password, ...profileData } = userData;
-  // NOTE - This is how userData is properly destructured to grab password and hash it
+  // NOTE - This is how userData is properly destructured to grab password and hash it; The rest operator (...profileData) collects all the remaining properties into a new object. This is useful because Prisma must receive passwordHash, not password.
   if (password) {
     profileData.passwordHash = await bcrypt.hash(password, 12);
   }
@@ -145,6 +136,11 @@ async function updateLastLoginAt(userId) {
     data: {
       lastLoginAt: new Date(),
     },
+    // Make the return behavior consistent and explicitly select ONLY the fields I need; use explicit select statements to enforce this boundary
+    select: {
+      id: true,
+      lastLoginAt: true,
+    },
   });
 }
 
@@ -152,15 +148,23 @@ async function deleteUser(userId) {
   return prisma.user.delete({
     where: {
       id: userId,
-    }
-  })
+    },
+    // Make the return behavior consistent and explicitly select ONLY the fields I need; use explicit select statements to enforce this boundary
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+    },
+  });
 }
 
 module.exports = {
   checkIfEmailExistsForSignUp,
   checkIfEmailAlreadyExists,
   getAllUsers,
-  getUser,  
+  getUser,
   createUser,
   updateUser,
   updateLastLoginAt,

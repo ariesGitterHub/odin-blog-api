@@ -1,11 +1,3 @@
-// REMINDER -  bcrypt should used and be handled in the service
-require("dotenv/config");
-
-// TODO - is below needed?
-// const { validationResult } = require("express-validator");
-// const {
-//   formatValidationErrors,
-// } = require("../utils/format-validation-errors.utils.js");
 const {
   checkIfEmailAlreadyExists,
   getAllUsers,
@@ -13,6 +5,8 @@ const {
   updateUser,
   deleteUser,
 } = require("../services/user.service.js");
+
+const validRoles = ["USER", "WRITER", "ADMIN"];
 
 async function getUsersForAdmin(req, res, next) {
   try {
@@ -43,21 +37,37 @@ async function updateUserByAdmin(req, res, next) {
   try {
     const userId = req.params.userId;
 
-    const validRoles = ["USER", "WRITER", "ADMIN"]; // TODO - what about this!?!?!?
+    // const validRoles = ["USER", "WRITER", "ADMIN"]; // Moved to top
 
     const { first_name, last_name, role, email, password } = req.body;
 
     const updateData = {};
 
-    if (first_name) {
+    // if (first_name) {
+    if (first_name !== undefined) {
+      // NOTE - use this if admin wants to change a name to an empty string
       updateData.firstName = first_name.trim();
     }
 
-    if (last_name) {
+    // if (last_name) {
+    if (last_name !== undefined) {
+      // NOTE - use this if admin wants to change a name to an empty string
       updateData.lastName = last_name.trim();
     }
 
-    if (role) {
+    // if (role) {
+    //   updateData.role = role;
+    // }
+
+    if (role !== undefined) {
+      if (!validRoles.includes(role)) {
+        return res.status(400).json({
+          error: {
+            message: "Invalid user role.",
+          },
+        });
+      }
+
       updateData.role = role;
     }
 
@@ -84,6 +94,15 @@ async function updateUserByAdmin(req, res, next) {
       updateData.password = password;
     }
 
+    // NOTE - below handles scenarios where admin submits an update without supplying any fields
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        error: {
+          message: "No valid fields provided for update.",
+        },
+      });
+    }
+
     const user = await updateUser(userId, updateData);
 
     return res.status(200).json({
@@ -101,8 +120,7 @@ async function deleteUserByAdmin(req, res, next) {
 
     const userViewed = await getUser(userId);
 
-    // check if the currentUser is an admin and if that admin is trying to delete any admin role
-
+    // Checks if the currentUser is an admin and if that admin is trying to delete any admin role
     if (currentUserRole === "ADMIN" && userViewed.role === "ADMIN") {
       return res.status(403).json({
         error: {
@@ -111,10 +129,10 @@ async function deleteUserByAdmin(req, res, next) {
       });
     }
 
-    const adminDeleteUser = await deleteUser(userId);
+    const adminDeletedUser = await deleteUser(userId);
 
     return res.status(200).json({
-      adminDeleteUser,
+      adminDeletedUser,
     });
   } catch (err) {
     next(err);

@@ -6,6 +6,8 @@
 //   minSpecialChars: 1,
 //   specialChars: "@, $, !, %, *, ?, &",
 // };
+
+// NOTE - dev password config
 module.exports = {
   minLength: 5,
   minLowercase: 1,
