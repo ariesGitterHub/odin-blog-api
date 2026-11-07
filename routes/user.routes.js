@@ -13,7 +13,7 @@ const { verifyUser } = require("../middleware/verify-user.middleware.js");
 
 const router = express.Router();
 
-router.put("/profile", verifyUser, validateProfileUpdate, updateProfile);
+router.patch("/profile", verifyUser, validateProfileUpdate, updateProfile);
 
 router.delete("/profile", verifyUser, deleteProfile);
 

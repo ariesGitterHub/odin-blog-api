@@ -16,7 +16,7 @@ router.get("/", verifyUser, requireAdmin, getUsersForAdmin);
 
 router.get("/:userId", verifyUser, requireAdmin, getOneUserForAdmin);
 
-router.put("/:userId", verifyUser, requireAdmin, updateUserByAdmin);
+router.patch("/:userId", verifyUser, requireAdmin, updateUserByAdmin);
 
 router.delete("/:userId", verifyUser, requireAdmin, deleteUserByAdmin);
 

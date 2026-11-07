@@ -15,8 +15,8 @@ const router = express.Router();
 // router.post("/:postId", verifyUser, requireWriter, createNewBlogComment);
 router.post("/:postId", verifyUser, createNewBlogComment);
 
-// router.put("/:commentId", verifyUser, requireWriter, editBlogComment);
-router.put("/:commentId", verifyUser, editBlogComment);
+// router.patch("/:commentId", verifyUser, requireWriter, editBlogComment);
+router.patch("/:commentId", verifyUser, editBlogComment);
 
 // router.delete("/:commentId", verifyUser, requireWriter, deleteBlogComment);
 router.delete("/:commentId", verifyUser, deleteBlogComment);
