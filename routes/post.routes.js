@@ -25,7 +25,8 @@ router.post("/", verifyUser, requireWriter, createNewBlogPost);
 
 router.put("/:postId", verifyUser, requireWriter, editBlogPost);
 
-router.put(
+// router.put(
+router.patch(
   "/publish/:postId",
   verifyUser,
   requireWriter,
