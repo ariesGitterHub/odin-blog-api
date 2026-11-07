@@ -34,6 +34,11 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+const {
+  csrfProtection,
+  csrfErrorHandler,
+} = require("./middleware/csrf.middleware.js");
+
 // *** Proxy configuration
 
 // Required when deployed behind Render's proxy.
@@ -63,11 +68,12 @@ app.use(
 );
 
 // *** Security headers
-
 app.use(helmet());
 
-// *** Routes
+// *** CSRF protection
+app.use(csrfProtection);
 
+// *** Routes
 // Authentication routes
 const authRoutes = require("./routes/auth.routes.js");
 
@@ -96,6 +102,9 @@ app.get("/", (req, res) => {
     message: "Bloggy API",
   });
 });
+
+// *** CSRF error handler
+app.use(csrfErrorHandler);
 
 // *** 404 handler
 

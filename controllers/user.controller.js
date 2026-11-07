@@ -65,7 +65,6 @@ async function deleteProfile(req, res, next) {
         },
       });
     }
-    console.log("userId = ", userId);
 
     await deleteUser(userId);
 

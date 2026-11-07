@@ -20,6 +20,13 @@ router.get("/password-rules", (req, res) => {
   res.json(passwordRules);
 });
 
+// CSRF Token
+router.get("/csrf-token", (req, res) => {
+  res.json({
+    csrfToken: req.csrfToken(),
+  });
+});
+
 // Auth Routes
 router.post("/signup", validateSignUp, signUp);
 

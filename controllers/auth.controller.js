@@ -284,7 +284,6 @@ async function getCurrentUser(req, res, next) {
     }
 
     const user = await getUserById(authData.userId);
-    console.log(user);
 
     if (!user) {
       return res.status(200).json({ user: null });

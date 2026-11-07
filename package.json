@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/ariesGitterHub/odin-blog-api#readme",
   "dependencies": {
+    "@dr.pogodin/csurf": "^1.18.2",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
