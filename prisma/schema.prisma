@@ -33,7 +33,7 @@ model User {
 model Post {
   id          String    @id @default(uuid())
   userId      String    @map("user_id")
-  postMessage String    @map("post_message") @db.VarChar(255)  
+  postMessage String    @map("post_message") @db.VarChar(100)  
   postTitle   String    @map("post_title") @db.VarChar(255)
   published   Boolean   @default(false) @map("published")
   createdAt   DateTime  @default(now()) @map("created_at")
