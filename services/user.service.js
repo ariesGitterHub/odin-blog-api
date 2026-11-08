@@ -122,6 +122,7 @@ async function updateUser(userId, userData) {
       firstName: true,
       lastName: true,
       email: true,
+      emailVerified: true,
       role: true,
     },
   });

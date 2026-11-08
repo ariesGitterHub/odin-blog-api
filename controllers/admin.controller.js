@@ -39,7 +39,7 @@ async function updateUserByAdmin(req, res, next) {
 
     // const validRoles = ["USER", "WRITER", "ADMIN"]; // Moved to top
 
-    const { first_name, last_name, role, email, password } = req.body;
+    const { first_name, last_name, role, email, email_verified, password } = req.body;
 
     const updateData = {};
 
@@ -89,6 +89,15 @@ async function updateUserByAdmin(req, res, next) {
       }
 
       updateData.email = email.trim().toLowerCase();
+    }
+
+    // NOTE - do not use this anti-pattern of misusing the ternary operator
+    // if (email_verified !== undefined) {
+    //   email_verified === "true" ? updateData.emailVerified = true : updateData.emailVerified = false
+    // }
+
+    if (email_verified !== undefined && email_verified !== "") {
+      updateData.emailVerified = email_verified === "true"; // REMINDER (again) - this naturally resolves to true or false
     }
 
     if (password) {

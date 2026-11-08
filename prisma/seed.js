@@ -36,6 +36,17 @@ async function seed() {
       emailVerified: true,
     },
   });
+
+  const user = await prisma.user.create({
+    data: {
+      firstName: "Jay",
+      lastName: "User",
+      email: "jay@qwe.com",
+      passwordHash: hash,
+      role: "USER",
+      emailVerified: false,
+    },
+  });
 }
 
 seed()
