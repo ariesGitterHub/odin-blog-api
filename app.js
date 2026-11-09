@@ -60,9 +60,14 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Configure CORS to allow credentials
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? [process.env.BLOG_READER_URL, process.env.BLOG_WRITER_URL]
+    : ["http://localhost:5183", "http://localhost:5173"];
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5183"],
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
@@ -99,7 +104,7 @@ app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Bloggy API",
+    message: "Bloggie API",
   });
 });
 
