@@ -75,7 +75,8 @@ function issueAccessToken(res, user) {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    // sameSite: "lax", // This is a potential problem as to why CSRF token is not working
+    sameSite: "none",
     maxAge: 3600000,
   });
 }
@@ -227,7 +228,8 @@ async function logOut(req, res, next) {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      // sameSite: "lax",
+      sameSite: "none", // NOTE - the cookie-clearing options should match the cookie-creation options
     });
 
     return res.status(200).json({

@@ -3,8 +3,9 @@ const csurf = require("@dr.pogodin/csurf").default; // I was getting an error th
 const csrfProtection = csurf({
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: process.env.NODE_ENV === "production",
+    // sameSite: 'strict', // REMINDER - prevents the browser from sending the cookie in cross-site requests
+    sameSite: "none", // REMINDER - allows cross-site requests, provided the cookie also has Secure, which requires HTTPS
     maxAge: 1000 * 60 * 60, // 1 hour
   },
 });
