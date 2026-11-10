@@ -6,13 +6,6 @@ const requiredEnvVars = [
   "DATABASE_URL",
   // "SESSION_SECRET", // using JWT not server-side sessions
   "JWT_SECRET",
-  // "INVITE_CODE",
-  // "STORAGE_PROVIDER",
-  // "MAX_FILE_DOWNLOAD_KB",
-  // "MAX_USER_STORAGE_MB",
-  // "SUPABASE_URL",
-  // "SUPABASE_SECRET_KEY",
-  // "SUPABASE_STORAGE_BUCKET",
   "NODE_ENV",
 ];
 
@@ -54,7 +47,6 @@ app.set("trust proxy", 1);
 //   "content": "Hello world"
 // }
 
-// app.use(express.json());
 // Enable parsing cookies and JSON body
 app.use(cookieParser());
 app.use(express.json());
