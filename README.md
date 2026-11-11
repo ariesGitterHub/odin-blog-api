@@ -1,4 +1,7 @@
 # Project Notes
++ Backend - Blog API: https://github.com/ariesGitterHub/odin-blog-api (You are here.)
++ Frontend #1 - Blog Reader: https://github.com/ariesGitterHub/odin-blog-reader
++ Frontend #2 - Blog Writer: https://github.com/ariesGitterHub/odin-blog-writer
 
 ## Project Website
 Project: Blog API: http://theodinproject.com/lessons/node-path-nodejs-blog-api
