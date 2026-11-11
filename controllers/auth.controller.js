@@ -16,6 +16,8 @@ const jwt = require("jsonwebtoken");
 
 const allowedRoles = ["ADMIN", "WRITER"];
 
+const isProduction = process.env.NODE_ENV === "production";
+
 // NOTE - Because I'm using Express 5, I don't need the try/catch merely to forward rejected async operations to your error middleware. However, keeping the try/catch for now is fine.
 
 async function signUp(req, res, next) {
@@ -72,12 +74,12 @@ function issueAccessToken(res, user) {
     },
   );
 
+  // isProduction was added because sameSite: "lax" was needed for dev mode to work, while sameSite: "none" is needed for production to work
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    // sameSite: "lax", // This is a potential problem as to why CSRF token is not working
-    sameSite: "none",
-    maxAge: 3600000,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 60 * 60 * 1000, // Express's res.cookie() maxAge is expressed in milliseconds
   });
 }
 
@@ -223,13 +225,13 @@ async function writerLogIn(req, res, next) {
 
 // NOTE - the cookie-clearing options need to match the original cookie's relevant attributes, particularly its path and domain if you set either when creating it.My current cookie doesn't specify either, so the default path behavior should be consistent.Also, clearing the cookie doesn't invalidate the JWT itself. It simply removes the browser's copy. This might be okay, given the one-hour token expiration...
 
+// NOTE - the cookie-clearing options should match the cookie-creation options, so mirror isProduction changes found above
 async function logOut(req, res, next) {
   try {
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      // sameSite: "lax",
-      sameSite: "none", // NOTE - the cookie-clearing options should match the cookie-creation options
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     return res.status(200).json({
