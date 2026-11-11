@@ -18,14 +18,13 @@ for (const variable of requiredEnvVars) {
 // *** Imports
 
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const helmet = require("helmet");
 
 // *** Create Express app
 
 const app = express();
-
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
 
 const {
   csrfProtection,
@@ -52,15 +51,17 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Configure CORS to allow credentials
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [process.env.BLOG_READER_URL, process.env.BLOG_WRITER_URL]
-    : ["http://localhost:5183", "http://localhost:5173"];
+const isProduction = process.env.NODE_ENV === "production";
+
+const allowedOrigins = isProduction
+  ? [process.env.BLOG_READER_URL, process.env.BLOG_WRITER_URL]
+  : ["http://localhost:5183", "http://localhost:5173"];
 
 app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"], // Must allow your CSRF header
   }),
 );
 
